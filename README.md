@@ -14,7 +14,7 @@ The shared credentials file has a default location of `~/.aws/credentials`. You 
 
 This file is an INI formatted file with section names corresponding to profiles. With each section, three configuration variables be specified: `aws_access_key_id`, `aws_secret_access_key`, `aws_session_token`. These are the only supported values in the shared credential file.
 
-Below is an minimal example of the shared credentials file (note how we've named the profile 'model-as-a-service'):
+Below is an minimal example of the shared credentials file (note how we've named the profile 'beular-api):
 
 ```ini
 [beular-api]
