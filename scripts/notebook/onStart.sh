@@ -25,10 +25,11 @@ initctl restart jupyter-server --no-wait
 
 sudo -u ec2-user -i <<'EOF'
 # PARAMETERS
-ENVIRONMENT=tensorflow_p36
+ENVIRONMENT=conda_python3
 source /home/ec2-user/anaconda3/bin/activate "$ENVIRONMENT"
 pip install --upgrade pip
-pip install contractions nltk
+pip install contractions nltk eli5
+pip install scikit-learn==0.21.3
 python -W ignore -m nltk.downloader punkt
 python -W ignore -m nltk.downloader averaged_perceptron_tagger
 python -W ignore -m nltk.downloader wordnet

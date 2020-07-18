@@ -15,7 +15,7 @@ class Config(object):
         # including when you create the notebook instance.
         on_start_script_path=os.path.join(
             os.getcwd(), 'scripts', 'notebook', 'onStart.sh'),
-        repo='https://github.com/csmcallister/beular-nb.git',
+        # repo='https://github.com/csmcallister/beular-nb.git',
         bucket_name=BUCKET_NAME,
         endpoint_name=ENDPOINT_NAME
     )

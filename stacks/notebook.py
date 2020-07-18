@@ -7,7 +7,7 @@ from aws_cdk import (
 )
 
 
-class SageMakerNotebookStack(core.Stack):
+class BeularNotebookStack(core.Stack):
     '''
     This will place a SageMaker Notebook instance with the private subnet
     of a VPC. Although the notebook instance is walled off from the internet,
@@ -25,7 +25,7 @@ class SageMakerNotebookStack(core.Stack):
             on_create_script = f.read()
 
         role = iam.Role(
-            self, "NotebookRole",
+            self, "BeularNotebookRole",
             assumed_by=iam.ServicePrincipal('sagemaker.amazonaws.com'),
             managed_policies=[iam.ManagedPolicy.from_aws_managed_policy_name(
                 'AmazonSageMakerFullAccess')]
@@ -38,14 +38,14 @@ class SageMakerNotebookStack(core.Stack):
         ))
 
         lifecycle_config = sm.CfnNotebookInstanceLifecycleConfig(
-            self, 'NotebookLifecycleConfig',
-            notebook_instance_lifecycle_config_name='NotebookLifecycleConfig',
+            self, 'BeularNotebookLifecycleConfig',
+            notebook_instance_lifecycle_config_name='BeularNotebookLifecycleConfig',  # noqa: E501
             on_create=[dict(content=core.Fn.base64(on_create_script))],
             on_start=[dict(content=core.Fn.base64(on_start_script))]
         )
 
         bucket = s3.Bucket(
-            self, 'beular-api-bucket',
+            self, 'beular-sagemaker-api-bucket',
             versioned=False,
             removal_policy=core.RemovalPolicy.DESTROY,
             block_public_access=s3.BlockPublicAccess(
@@ -59,13 +59,13 @@ class SageMakerNotebookStack(core.Stack):
         endpoint_name = kwargs.get('endpoint_name')
         lc_name = lifecycle_config.notebook_instance_lifecycle_config_name
         notebook = sm.CfnNotebookInstance(  # noqa: F841
-            self, 'Notebook',
+            self, 'BeularNotebook',
             lifecycle_config_name=lc_name,
             role_arn=role.role_arn,
             default_code_repository=kwargs.get('repo'),
             direct_internet_access='Disabled',
             instance_type='ml.t2.medium',  # ml.t2.medium is smallest possible
-            notebook_instance_name="SageMakerNotebook",
+            notebook_instance_name="BeularSageMakerNotebook",
             subnet_id=vpc.private_subnets[0].subnet_id,
             security_group_ids=[vpc.vpc_default_security_group],
             volume_size_in_gb=5,  # 5 is minimum; max is 16384
