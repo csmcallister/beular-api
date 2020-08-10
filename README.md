@@ -47,17 +47,72 @@ pip install -r requirements.txt
 
 ### Application Configuration
 
-See config.py
+For simplicity, all config is kept in `config.py`.
 
 ## Deploy
 
 This application is comprised of three separate stacks:
 
-1. The Virtual Private Cloud
-2. The SageMaker Notebook
-3. The Deployed Model API
+1. The Virtual Private Cloud (`stacks/vpc.py`)
+2. The SageMaker Notebook (`stacks/notebook.py`)
+3. The Deployed Model API (`stacks/api.py`)
 
-Additionally, the model's source code is sourced in a separate repository so that we can sync it with our Notebook instance.
+>Additionally, the models' source code is sourced in a separate repository so that we can sync it with our Notebook instance.
+
+You must deploy the stacks sequentially, as you can't have a SageMaker instance without a VPC to host it. Moreover, you must first train and deploy a model within SageMaker before you can create the model's API.
+
+To deploy the VPC stack:
+
+```bash
+cdk deploy VpcStack --profile beular-api
+```
+
+Then, to deploy the SageMaker stack:
+
+```bash
+cdk deploy BeularNotebookStack --profile beular-api
+```
+
+Then, to deploy the API stack (after you've trained a model and deployed it to a SageMaker endpoint!):
+
+```bash
+cdk deploy ModelAPIStack --profile beular-api
+```
+
+After deploying the API, you can get the API url from the CDK output (or you can check online in the API Gateway console):
+
+```bash
+...
+ ✅  ModelAPIStack
+
+Outputs:
+ModelAPIStack.callsmapiEndpoint123ABC456 = https://abc123execute-api.us-east-1.amazonaws.com/prod/
+```
+
+With that in hand, send a request to the API:
+
+```bash
+curl -X POST -H "Content-Type: text/plain" --data "this is a test" https://fntzl3eq2h.execute-api.us-east-1.amazonaws.com/prod/
+[{"pred_prob": "95.0%", "prediction": "0", "expl": "PHN...DwvcD4="}]
+```
+
+>Note that the prediction explanation ("expl") is base64-encoded.
+
+## Destroy
+
+You can also use the CDK to destroy stacks with, for example:
+
+```bash
+cdk destroy ModelAPIStack --profile beular-api
+```
+
+## Generate a Cloudformation Template
+
+Althouh you could log into the AWS console and take a look at the Cloudformation stacks there, you can also run the following command to write them as JSON documents to `.cdk.out/`:
+
+```bash
+cdk synth --profile beular-api
+```
 
 ## Test
 

@@ -20,7 +20,8 @@ def main(event, context):
     content_type = os.environ.get('CONTENT_TYPE')
 
     data = json.loads(json.dumps(event))
-    body = data['body'].read()
+    body = data['body']
+    print(body)
    
     response = client.invoke_endpoint(
         EndpointName=endpoint_name,
@@ -29,7 +30,7 @@ def main(event, context):
     
     results = json.loads(response['Body'].read())
 
-    predictions = results['predictions']
+    predictions = results['instances']
     
     return {
         'statusCode': 200,

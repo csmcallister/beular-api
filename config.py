@@ -2,8 +2,8 @@ import os
 
 
 BUCKET_NAME = os.environ.get('BUCKET_NAME', 'beular-api-bucket')
-ENDPOINT_NAME = os.environ.get('ENDPOINT_NAME', "beular-api-endpoint")
-CONTENT_TYPE = os.environ.get('CONTENT_TYPE', 'text/plain')
+ENDPOINT_NAME = os.environ.get('ENDPOINT_NAME', "endpoint123")
+CONTENT_TYPE = os.environ.get('CONTENT_TYPE', 'text/csv')
 
 
 class Config(object):
