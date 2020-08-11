@@ -106,6 +106,14 @@ You can also use the CDK to destroy stacks with, for example:
 cdk destroy ModelAPIStack --profile beular-api
 ```
 
+which should eventually output:
+
+```bash
+✅  ModelAPIStack: destroyed
+```
+
+>If you get an error destroying, it's likely due to resource state changes from performing actions in the AWS console. You can always manually delete things in your stack from the console.
+
 ## Generate a Cloudformation Template
 
 Althouh you could log into the AWS console and take a look at the Cloudformation stacks there, you can also run the following command to write them as JSON documents to `.cdk.out/`:
@@ -113,6 +121,8 @@ Althouh you could log into the AWS console and take a look at the Cloudformation
 ```bash
 cdk synth --profile beular-api
 ```
+
+More cdk commands are documented [here](https://docs.aws.amazon.com/fr_fr/cdk/latest/guide/cli.html#cli-commands).
 
 ## Test
 
