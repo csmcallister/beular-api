@@ -104,7 +104,7 @@ If you deployed the BlazingText model:
 
 ```python
 import requests
-uri = 'https://1ekmutzyo3.execute-api.us-east-1.amazonaws.com/prod/'
+uri = 'https://abc123.execute-api.us-east-1.amazonaws.com/prod/'
 data = {'instances': ['This is a test of the system']}
 r = requests.post(uri, json=data)
 r.json()
