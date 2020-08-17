@@ -17,22 +17,48 @@ def main(event, context):
     
     client = boto3.client('sagemaker-runtime')
     endpoint_name = os.environ.get('ENDPOINT_NAME')
-    content_type = os.environ.get('CONTENT_TYPE')
-
+    
     data = json.loads(json.dumps(event))
     body = data['body']
     print(body)
-   
-    response = client.invoke_endpoint(
-        EndpointName=endpoint_name,
-        Body=body,
-        ContentType=content_type)
-    
-    results = json.loads(response['Body'].read())
 
-    predictions = results['instances']
+    try:
+        _ = json.loads(body)
+        response = client.invoke_endpoint(
+            EndpointName=endpoint_name,
+            Body=body,
+            ContentType='application/json'
+        )
+        # e.g. b'[{"prob": [1.0000100135803223], "label": ["__label__0"]}]'
+        results = json.loads(response['Body'].read())
+        print(results)
+        return {
+            'statusCode': 200,
+            'body': json.dumps(results)
+        }
+
     
-    return {
-        'statusCode': 200,
-        'body': json.dumps(predictions)
-    }
+    except json.decoder.JSONDecodeError:
+        # sklearn model 
+        content_type = os.environ.get('CONTENT_TYPE')
+        response = client.invoke_endpoint(
+            EndpointName=endpoint_name,
+            Body=body,
+            ContentType=content_type
+        )
+    
+        results = json.loads(response['Body'].read())
+
+        predictions = results['instances']
+    
+        return {
+            'statusCode': 200,
+            'body': json.dumps(predictions)
+        }
+
+    except Exception as e:
+        print(e)
+        return {
+            'statusCode': 500,
+            'body': json.dumps(dict(error=e))
+        }

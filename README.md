@@ -89,7 +89,9 @@ Outputs:
 ModelAPIStack.callsmapiEndpoint123ABC456 = https://abc123execute-api.us-east-1.amazonaws.com/prod/
 ```
 
-With that in hand, send a request to the API:
+With that in hand, you can now send a request to the API. 
+
+If you deployed one of the sklearn models, use:
 
 ```bash
 curl -X POST -H "Content-Type: text/plain" --data "this is a test" https://fntzl3eq2h.execute-api.us-east-1.amazonaws.com/prod/
@@ -97,6 +99,17 @@ curl -X POST -H "Content-Type: text/plain" --data "this is a test" https://fntzl
 ```
 
 >Note that the prediction explanation ("expl") is base64-encoded.
+
+If you deployed the BlazingText model:
+
+```python
+import requests
+uri = 'https://1ekmutzyo3.execute-api.us-east-1.amazonaws.com/prod/'
+data = {'instances': ['This is a test of the system']}
+r = requests.post(uri, json=data)
+r.json()
+#[{'prob': [1.0000100135803223], 'label': ['__label__0']}]
+```
 
 ## Destroy
 

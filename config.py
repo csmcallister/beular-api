@@ -2,7 +2,7 @@ import os
 
 
 BUCKET_NAME = os.environ.get('BUCKET_NAME', 'beular-api-bucket')
-ENDPOINT_NAME = os.environ.get('ENDPOINT_NAME', "endpoint123")
+ENDPOINT_NAME = os.environ.get('ENDPOINT_NAME', "bttest123")
 CONTENT_TYPE = os.environ.get('CONTENT_TYPE', 'text/csv')
 
 
