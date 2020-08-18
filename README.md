@@ -6,32 +6,48 @@ Using the AWS Cloud Developer Kit to build, train, and deploy a machine-learning
 
 ### AWS Account Setup
 
+You'll need an AWS IAM user with the following AWS-managed policies attached to it:
+
+- AWSLambdaFullAccess
+- AmazonS3FullAccess
+- AmazonAPIGatewayInvokeFullAccess
+- CloudWatchFullAccess
+- AmazonAPIGatewayAdministrator
+- AmazonVPCFullAccess
+- AmazonSageMakerFullAccess
+- AWSCloudFormationFullAccess
+
+You'll also need the in-line policies in the `policies/` dir of this repo. Take note of where you'll need to insert your AWS account's id.
+
+Moving forward, we use the name `beular-api` when referencing the AWS account.
+
 #### AWS CLI and Boto3 Setup
 
-Although there's a [number of ways](https://boto3.amazonaws.com/v1/documentation/api/latest/guide/configuration.html#configuring-credentials) for Boto3 to find your credentials, we're going to adopy usage of a shared credential file (`~/.aws/credentials`).
+Although there's a [number of ways](https://boto3.amazonaws.com/v1/documentation/api/latest/guide/configuration.html#configuring-credentials) for Boto3 to find your credentials, we're going to adopt usage of a shared credential file (e.g. `~/.aws/credentials`).
 
 The shared credentials file has a default location of `~/.aws/credentials`. You can change the location of the shared credentials file by setting the `AWS_SHARED_CREDENTIALS_FILE` environment variable.
 
-This file is an INI formatted file with section names corresponding to profiles. With each section, three configuration variables be specified: `aws_access_key_id`, `aws_secret_access_key`, `aws_session_token`. These are the only supported values in the shared credential file.
+This file is an INI-formatted file with section names corresponding to *profiles*.
 
-Below is an minimal example of the shared credentials file (note how we've named the profile 'beular-api):
+Below is a minimal example of the shared credentials file (note how we've named the profile 'beular-api`):
 
 ```ini
 [beular-api]
 aws_access_key_id=foo
 aws_secret_access_key=bar
-aws_session_token=baz
+region=us-east-1
+output=json
 ```
 
 #### CDK Installation
 
 Follow the instructions [here](https://docs.aws.amazon.com/cdk/latest/guide/getting_started.html) to install and configure the AWS CDK. You'll need to install node.js as a part of this step if you don't already have it.
 
->Note that we'll pass our AWS credentials to the AWS CDK CLI using the --profile option with `~/.aws/config`.
+To authenticate ourselves, we'll use the `--profile` option to specify our `beular-api` profile.
 
 #### AWS Service Quotas
 
-AWS accounts have default quotas for EC2 instances to prevent runaway bills on their most expensive instances. If you get an error when you start training in the Jupyter Notebook within Sagemaker, you might need to [request a service quota increase](https://docs.aws.amazon.com/general/latest/gr/aws_service_limits.html) for the associated EC2 instance.
+AWS accounts have default quotas for EC2 instances to prevent runaway bills on their most expensive instances. If you get an error when you start training in the Jupyter Notebook within Sagemaker, you might need to [request a service quota increase](https://docs.aws.amazon.com/general/latest/gr/aws_service_limits.html) for the associated EC2 instance. Or just use an instance for which you already have a quota >= 1.
 
 ### Python Environment
 
@@ -47,7 +63,7 @@ pip install -r requirements.txt
 
 ### Application Configuration
 
-For simplicity, all config is kept in `config.py`.
+For simplicity, all configuration details are kept in `config.py`.
 
 ## Deploy
 
@@ -57,7 +73,7 @@ This application is comprised of three separate stacks:
 2. The SageMaker Notebook (`stacks/notebook.py`)
 3. The Deployed Model API (`stacks/api.py`)
 
->Additionally, the models' source code is sourced in a separate repository so that we can sync it with our Notebook instance.
+Additionally, the models' source code is sourced in a [separate repository](https://github.com/csmcallister/beular-nb) so that we can sync it with our Notebook instance. If you're wanting to use your own repo, make sure it's public and use its git url in the config.
 
 You must deploy the stacks sequentially, as you can't have a SageMaker instance without a VPC to host it. Moreover, you must first train and deploy a model within SageMaker before you can create the model's API.
 
@@ -89,7 +105,7 @@ Outputs:
 ModelAPIStack.callsmapiEndpoint123ABC456 = https://abc123execute-api.us-east-1.amazonaws.com/prod/
 ```
 
-With that in hand, you can now send a request to the API. 
+With that in hand, you can now send a request to the API.
 
 If you deployed one of the sklearn models, use:
 
@@ -136,10 +152,6 @@ cdk synth --profile beular-api
 ```
 
 More cdk commands are documented [here](https://docs.aws.amazon.com/fr_fr/cdk/latest/guide/cli.html#cli-commands).
-
-## Test
-
-ToDo
 
 ### Lint
 

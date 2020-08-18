@@ -1,0 +1,87 @@
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Sid": "SageMakerApis",
+            "Effect": "Allow",
+            "Action": [
+                "sagemaker:*"
+            ],
+            "Resource": "*"
+        },
+        {
+            "Sid": "VpcConfigurationForCreateForms",
+            "Effect": "Allow",
+            "Action": [
+                "ec2:DescribeVpcs",
+                "ec2:DescribeSubnets",
+                "ec2:DescribeSecurityGroups"
+            ],
+            "Resource": "*"
+        },
+        {
+            "Sid": "KmsKeysForCreateForms",
+            "Effect": "Allow",
+            "Action": [
+                "kms:DescribeKey",
+                "kms:ListAliases"
+            ],
+            "Resource": "*"
+        },
+        {
+            "Sid": "AccessAwsMarketplaceSubscritions",
+            "Effect": "Allow",
+            "Action": [
+                "aws-marketplace:ViewSubscriptions"
+            ],
+            "Resource": "*"
+        },
+        {
+            "Effect": "Allow",
+            "Action": [
+                "codecommit:BatchGetRepositories",
+                "codecommit:CreateRepository",
+                "codecommit:GetRepository",
+                "codecommit:ListRepositories",
+                "codecommit:ListBranches",
+                "secretsmanager:CreateSecret",
+                "secretsmanager:DescribeSecret",
+                "secretsmanager:ListSecrets"
+            ],
+            "Resource": "*"
+        },
+        {
+            "Sid": "ListAndCreateExecutionRoles",
+            "Effect": "Allow",
+            "Action": [
+                "iam:ListRoles",
+                "iam:CreateRole",
+                "iam:CreateRole",
+                "iam:CreatePolicy",
+                "iam:AttachRolePolicy"
+            ],
+            "Resource": "*"
+        },
+        {
+            "Sid": "DescribeECRMetaData",
+            "Effect": "Allow",
+            "Action": [
+                "ecr:Describe*"
+            ],
+            "Resource": "*"
+        },
+        {
+            "Sid": "PassRoleForExecutionRoles",
+            "Effect": "Allow",
+            "Action": [
+                "iam:PassRole"
+            ],
+            "Resource": "*",
+            "Condition": {
+                "StringEquals": {
+                    "iam:PassedToService": "sagemaker.amazonaws.com"
+                }
+            }
+        }
+    ]
+}
